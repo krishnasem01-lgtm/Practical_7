@@ -2,9 +2,9 @@ const request = require('supertest');
 const app = require('../app');
 
 describe('GET /', () => {
-  it('should return success message', async () => {
+  it('should return 200 status', async () => {
     const res = await request(app).get('/');
     expect(res.statusCode).toBe(200);
-    expect(res.text).toContain('CI/CD with Docker');
+    expect(res.text).toContain('CI/CD Pipeline Active');
   });
 });
