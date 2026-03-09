@@ -29,5 +29,5 @@ jobs:
       - run: docker push ${{ secrets.DOCKER_USERNAME }}/advanced-cicd-app
 
       - name: Trigger Render Deploy
-        if: success()
+        if: success() && secrets.RENDER_DEPLOY_HOOK_URL != ''
         run: curl ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
