@@ -29,5 +29,12 @@ jobs:
       - run: docker push ${{ secrets.DOCKER_USERNAME }}/advanced-cicd-app
 
       - name: Trigger Render Deploy
-        if: success() && secrets.RENDER_DEPLOY_HOOK_URL != ''
-        run: curl ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        if: success()
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -n "$RENDER_DEPLOY_HOOK_URL" ]; then
+            curl "$RENDER_DEPLOY_HOOK_URL"
+          else
+            echo "RENDER_DEPLOY_HOOK_URL secret is not set, skipping deploy hook."
+          fi
