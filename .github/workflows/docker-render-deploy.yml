@@ -1,4 +1,4 @@
-name: Docker CI/CD Pipeline
+name: CI & Deploy to Docker Hub & Render
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-test-push:
+  build-test-push-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +17,8 @@ jobs:
           node-version: 18
 
       - run: npm install
-      - run: npm test
+      - run: npm run lint
+      - run: npm run build
 
       - uses: docker/login-action@v2
         with:
@@ -26,3 +27,7 @@ jobs:
 
       - run: docker build -t ${{ secrets.DOCKER_USERNAME }}/advanced-cicd-app .
       - run: docker push ${{ secrets.DOCKER_USERNAME }}/advanced-cicd-app
+
+      - name: Trigger Render Deploy
+        if: success()
+        run: curl ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
